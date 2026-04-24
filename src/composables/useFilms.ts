@@ -5,8 +5,28 @@ import type { Film, response } from '@/types/film'
 export function useFilms() {
   const characters = ref<Film[]>([])
   const character = ref<Film | null>(null)
+  const favorites = ref<Film[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
+
+  function addFavorites(id: number) {
+    const ch = characters.value.find((c) => c.id === id)
+    if (!ch) return
+
+    if (!Array.isArray(favorites.value)) {
+      favorites.value = []
+    }
+
+    const exists = favorites.value.some((f) => f.id === id)
+
+    if (!exists) {
+      favorites.value.push(ch)
+
+      localStorage.setItem('favorites', JSON.stringify(favorites.value))
+    }
+
+    console.log('favorites', favorites.value)
+  }
 
   async function getAllCharacters() {
     loading.value = true
@@ -14,9 +34,9 @@ export function useFilms() {
 
     try {
       const response = await get<response>('/character')
-    characters.value = response.results
+      characters.value = response.results
 
-      console.log("response", characters.value)
+      console.log('response', characters.value)
     } catch (e) {
       error.value = (e as Error).message
     } finally {
@@ -27,7 +47,7 @@ export function useFilms() {
   async function getFilmById(id: string) {
     loading.value = true
     error.value = null
-    
+
     try {
       character.value = await get<Film>(`/films/${id}`)
     } catch (e) {
@@ -38,11 +58,13 @@ export function useFilms() {
   }
 
   return {
+    favorites,
     characters,
     character,
     loading,
     error,
     getFilmById,
-    getAllCharacters
+    getAllCharacters,
+    addFavorites,
   }
 }

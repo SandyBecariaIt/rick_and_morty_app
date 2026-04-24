@@ -1,6 +1,6 @@
 <template>
-  <div class="card" @click="$emit('select', id)">
-    <div class="card-image">
+  <div class="card">
+    <div class="card-image" @click="$emit('select', id)">
       <figure class="image is-4by3">
         <img
           :src="image"
@@ -15,8 +15,7 @@
         </div>
       </div>
 
-      <div class="content">
-
+      <div class="content" @click="$emit('addFavorite', id)">
         <time>
           <i class="fa-solid fa-star"></i>
         </time>
@@ -34,6 +33,7 @@ defineProps<{
 
 defineEmits<{
   (event: 'select', id: number): void
+  (event: 'addFavorite', id: number): void
 }>()
 </script>
 
@@ -44,5 +44,15 @@ defineEmits<{
 
 .card {
   cursor: pointer;
+}
+
+.card-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.content {
+  cursor: pointer;
+  color: #FFDF00;
 }
 </style>

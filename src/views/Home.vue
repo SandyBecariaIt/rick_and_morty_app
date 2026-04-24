@@ -4,11 +4,12 @@
 
     <div class="columns is-multiline">
       <div class="column is-4">
-        <Input
-          :items="characters"
-          placeholder="Buscar película..."
-          @select="onSelect"
-        />
+        <Input :items="characters" placeholder="Buscar película..." @select="onSelect" />
+      </div>
+
+      <div class="column is-4" @click="showFavorites = !showFavorites" style="cursor: pointer;">
+        <i class="fa-solid fa-star"></i>
+        Mis Favoritos ({{ favorites.length }})
       </div>
 
       <div class="column is-full">
@@ -21,13 +22,9 @@
         <div v-else-if="error">{{ error }}</div>
 
         <div v-else class="columns is-multiline">
-          <div v-for="character in characters" :key="character.id" class="column is-3">
-            <Card
-              :id="character.id"
-              :name="character.name"
-              :image="character.image"
-              @select="(id) => onSelectedMovie(id)"
-            />
+          <div v-for="character in listToShow" :key="character.id" class="column is-3">
+            <Card :id="character.id" :name="character.name" :image="character.image"
+              @select="(id) => onSelectedMovie(id)" @addFavorite="(id) => addFavoriteFunction(id)" />
           </div>
         </div>
       </div>
@@ -48,17 +45,36 @@ import Card from "../components/card.vue";
 
 const search = ref("");
 const router = useRouter();
-const { characters, loading, error, getAllCharacters } = useFilms();
-console.log(characters)
+const showFavorites = ref(false)
+const { characters, favorites, loading, error, getAllCharacters, addFavorites } = useFilms();
+
+console.log("fav", favorites.value)
+
 onMounted(() => {
   getAllCharacters();
+
+  const stored = localStorage.getItem('favorites')
+
+  if (stored) {
+    const parsed = JSON.parse(stored)
+
+    favorites.value = Array.isArray(parsed) ? parsed : [parsed]
+  }
 });
 
-function onSelect(item: { id: number; title: string }) {
+const listToShow = computed(() => {
+  return showFavorites.value ? favorites.value : characters.value
+})
+
+function addFavoriteFunction(id: number) {
+  addFavorites(id)
+}
+
+function onSelect(item: { id: number; name: string }) {
   router.push({ name: 'details', params: { id: item.id } })
 }
 
-const onSelectedMovie = (id: string) => {
+const onSelectedMovie = (id: number) => {
   router.push({ name: "details", params: { id } });
 };
 
