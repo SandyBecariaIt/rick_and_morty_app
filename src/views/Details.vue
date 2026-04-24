@@ -19,10 +19,10 @@
           </div>
 
           <div class="column is-8">
-            <p class="subtitle"><strong>Titulo original: </strong>{{ character?.name || '' }}</p>
-            <p class="subtitle"><strong>Título original romanizado: </strong>{{ character?.status || '' }}</p>
-            <p><strong>Director: </strong>{{ character?.species || '' }}</p>
-            <p><strong>Productor: </strong>{{ character?.gender || '' }}</p>
+            <p class="subtitle"><strong>Nombre: </strong>{{ character?.name || '' }}</p>
+            <p class="subtitle"><strong>Estado: </strong>{{ character?.status || '' }}</p>
+            <p><strong>Especie: </strong>{{ character?.species || '' }}</p>
+            <p><strong>Genero: </strong>{{ character?.gender || '' }}</p>
             <p>{{ character?.location?.name || '' }}</p>
           </div>
         </div>

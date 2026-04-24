@@ -49,7 +49,7 @@ export function useFilms() {
     error.value = null
 
     try {
-      character.value = await get<Film>(`/films/${id}`)
+      character.value = await get<Film>(`/character/${id}`)
     } catch (e) {
       error.value = (e as Error).message
     } finally {
