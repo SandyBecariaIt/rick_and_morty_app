@@ -44,7 +44,7 @@ export function useFilms() {
     }
   }
 
-  async function getFilmById(id: string) {
+  async function getCharacterById(id: string) {
     loading.value = true
     error.value = null
 
@@ -63,7 +63,7 @@ export function useFilms() {
     character,
     loading,
     error,
-    getFilmById,
+    getCharacterById,
     getAllCharacters,
     addFavorites,
   }

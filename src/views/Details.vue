@@ -40,11 +40,11 @@ import { useFilms } from "@/composables/useFilms";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-const { character, loading, error, getFilmById } = useFilms();
+const { character, loading, error, getCharacterById } = useFilms();
 
 onMounted(() => {
   const id = router.currentRoute.value.params.id as string;
-  getFilmById(id);
+  getCharacterById(id);
 });
 </script>
 
