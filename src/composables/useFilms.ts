@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { get } from '@/services/network'
-import type { Film, response } from '@/types/film'
+import type { Film, Info, response } from '@/types/film'
 
 export function useFilms() {
   const characters = ref<Film[]>([])
@@ -8,6 +8,13 @@ export function useFilms() {
   const favorites = ref<Film[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
+  const page = ref(1) // actual page
+  const info = ref<Info>({
+    count: 0,
+    pages: 0,
+    next: null,
+    prev: null,
+  })
 
   function addFavorites(id: number) {
     const ch = characters.value.find((c) => c.id === id)
@@ -24,19 +31,16 @@ export function useFilms() {
 
       localStorage.setItem('favorites', JSON.stringify(favorites.value))
     }
-
-    console.log('favorites', favorites.value)
   }
 
-  async function getAllCharacters() {
+  async function getAllCharacters(page: number = 1) {
     loading.value = true
     error.value = null
 
     try {
-      const response = await get<response>('/character')
+      const response = await get<response>(`/character?page=${page}`)
       characters.value = response.results
-
-      console.log('response', characters.value)
+      info.value = response.info
     } catch (e) {
       error.value = (e as Error).message
     } finally {
@@ -57,14 +61,50 @@ export function useFilms() {
     }
   }
 
+  async function nextPage() {
+    if (!info.value.next) return
+
+    loading.value = true
+    try {
+      const response = await fetch(info.value.next).then((res) => res.json())
+      characters.value = response.results
+      info.value = response.info
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function prevPage() {
+  if (!info.value.prev) return
+
+  loading.value = true
+  try {
+    const response = await fetch(info.value.prev).then(res => res.json())
+    characters.value = response.results
+    info.value = response.info
+  } finally {
+    loading.value = false
+  }
+}
+
+  function goToPage(p: number) {
+  page.value = p
+  getAllCharacters(p)
+}
+
   return {
     favorites,
     characters,
     character,
     loading,
     error,
+    page,
+    info,
     getCharacterById,
     getAllCharacters,
     addFavorites,
+    nextPage,
+    prevPage,
+    goToPage,
   }
 }

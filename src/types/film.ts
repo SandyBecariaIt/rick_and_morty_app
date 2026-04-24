@@ -1,12 +1,14 @@
 
 export interface response {
-  info: {
-    count: number
-    pages: number
-    next: string | null
-    prev: string | null
-  },
+  info: Info,
   results: Film[]
+}
+
+export interface Info {
+  count: number
+  pages: number
+  next: string | null
+  prev: string | null
 }
 
 export interface Film {

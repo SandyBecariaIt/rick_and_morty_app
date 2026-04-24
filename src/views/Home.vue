@@ -28,11 +28,16 @@
           </div>
         </div>
       </div>
+
+      <div class="column is-full">
+        <Pagination :page="page" :totalPages="info.pages" @next="nextPage" @prev="prevPage" @goTo="goToPage" />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import Pagination from "@/components/pagination.vue";
 import { ref, computed, onMounted } from "vue";
 import { useFilms } from "@/composables/useFilms";
 import { useRouter } from "vue-router";
@@ -46,7 +51,19 @@ import Card from "../components/card.vue";
 const search = ref("");
 const router = useRouter();
 const showFavorites = ref(false)
-const { characters, favorites, loading, error, getAllCharacters, addFavorites } = useFilms();
+const {
+  characters,
+  favorites,
+  page,
+  info,
+  loading,
+  error,
+  getAllCharacters,
+  addFavorites,
+  nextPage,
+  prevPage,
+  goToPage,
+} = useFilms();
 
 console.log("fav", favorites.value)
 
@@ -79,5 +96,3 @@ const onSelectedMovie = (id: number) => {
 };
 
 </script>
-
-<style scoped></style>
